@@ -15,11 +15,13 @@ public class Game_Manager : MonoBehaviour
     
     public GameObject queue;
     public List<Level> levels;
+    public Level levelObj;
     public List<GameObject> prefabs;
     public GameObject comboBox;
     public GameObject timeBar;
+    public GameObject SoundManager;
 
-    public PlayerData playerData;
+    public PlayerData playerData;   
     public LevelData levelData;
 
     public GameObject Bar;
@@ -31,7 +33,7 @@ public class Game_Manager : MonoBehaviour
     private bool timerIsRunning = false;
     private int score = 0;
     private int combo = 0;
-    private int level = 0;
+    public int level = 0;
     
 
     private List<GameObject> tiles;
@@ -40,13 +42,16 @@ public class Game_Manager : MonoBehaviour
     public TMP_Text scoreText;
     public TMP_Text levelText;
     public TMP_Text comboText;
+    public TMP_Text panelScoreText;
+
 
     public GameObject PanelWin;
     public GameObject PanelLose;
     public GameObject PanelPause;
 
     public GameObject SpawnPoint;
-    
+    public TextAsset playerJSON;
+
     Coroutine coroutine;
 
     private void Awake()
@@ -55,7 +60,7 @@ public class Game_Manager : MonoBehaviour
     }
     void Start()
     {
-        loadFilePlayerJSON();
+
         startGame();
         timerIsRunning = true;
         second = minute * 60;
@@ -80,40 +85,43 @@ public class Game_Manager : MonoBehaviour
             }
         }
 
-       
-
     }
 
     public void startGame()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 1.0f;
+        loadFilePlayerJSON();
         setDataGame();
         SpawnPoint.SetActive(true);
         SpawnPoint.GetComponent<SpawnPoint>().Spawn();
 
         scoreText.text = string.Format("{0}", score);
-        levelText.text = string.Format("Lv.{0}", level);
+        levelText.text = string.Format("Lv.{0}", levelObj.level);
+    }
+
+    public void startNextLevel()
+    {
+
     }
     public void setDataGame()
     {
-        if(playerData != null)
+      if(playerData != null)
         {
-            int level = playerData.level;
-            loadFileLevelJSON(level);
-
-            if(levelData != null)
+            levelObj = levels[playerData.level - 1];
+            if (levelObj != null)
             {
-                this.level = levelData.level;
-                number = levelData.number;
-                minute = levelData.time;
+                number = levelObj.number;
+                minute = levelObj.PlayTime;
                 score = 0;
                 second = minute * 60;
                 combo = 0;
+                level = levelObj.level;
+                numberTile = levelObj.number * 3;
 
             }
         }
 
-      
+
     }
 
 
@@ -137,11 +145,13 @@ public class Game_Manager : MonoBehaviour
             level = 1;
         }
         saveFilePlayerJSON();
+        PanelWin.SetActive(true);
+        Debug.Log("Win Game!");
     }
 
     public void pauseGame()
     {
-
+        Time.timeScale = 0; 
     }
 
     public void continueGame()
@@ -156,6 +166,7 @@ public class Game_Manager : MonoBehaviour
         handleCombo();
         score += combo;
         scoreText.text = string.Format("{0}", score);
+        panelScoreText.text = string.Format("{0}", score);
     }
 
     public void handleCombo()
@@ -166,7 +177,7 @@ public class Game_Manager : MonoBehaviour
         }
         comboBox.SetActive(true);
         Bar.transform.localScale = Vector3.one;
-        coroutine = StartCoroutine(StartCombo(5));
+        coroutine = StartCoroutine(StartCombo(3));
         combo++;
         comboText.text = string.Format("Combo x {0}", combo);
     }
@@ -203,12 +214,10 @@ public class Game_Manager : MonoBehaviour
 
     public void checkWinGame()
     {
-        GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
-        if (tiles.Length == 0 && numberTile == 0)
+        Debug.Log(numberTile);
+        if ( numberTile == 0)
         {
-            PanelWin.SetActive(true);
             winGame();
-            Debug.Log("Win Game");
         }
         
     }
@@ -231,22 +240,36 @@ public class Game_Manager : MonoBehaviour
     }
 
 
-    public void loadFileLevelJSON(int level)
-    {
-        string json = File.ReadAllText(Application.dataPath + "/data/level_" + level + ".json");
-
-        levelData = JsonUtility.FromJson<LevelData>(json);
-
-    }
-
     public void loadFilePlayerJSON()
     {
-        string json = File.ReadAllText(Application.dataPath + "/data/player.json" );
+        string path = Application.persistentDataPath + "/player.json";
+        if (System.IO.File.Exists(path))
+        {
+            LoadFilePlayerData(path);
+        }
+        else
+        {
+            CreateFilePlayerData(path);
+            LoadFilePlayerData(path);
 
+        }
+    }
+
+    private void CreateFilePlayerData(string path)
+    {
+        PlayerData data = new PlayerData();
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(path, json);
+    }
+
+    private void LoadFilePlayerData(string path)
+    {
+        string json = File.ReadAllText(path);
         playerData = JsonUtility.FromJson<PlayerData>(json);
     }
     public void saveFilePlayerJSON()
     {
+        string path = Application.persistentDataPath + "/player.json";
         PlayerData data = new PlayerData();
         data.level = this.level;
         data.score = playerData.score + this.score;
@@ -254,6 +277,6 @@ public class Game_Manager : MonoBehaviour
         data.coin = playerData.coin;
 
         string json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(Application.dataPath + "/data/player.json", json);
+        File.WriteAllText(path, json);
     }
 }

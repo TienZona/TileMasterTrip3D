@@ -10,9 +10,21 @@ public class Tile : MonoBehaviour
     void Start()
     {
         queueA = GameObject.Find("Queue");
+     
     }
 
-  
+    private void Update()
+    {
+        float x = transform.rotation.x;
+        float y = transform.rotation.y;
+        float z = transform.rotation.z;
+        if ((x >= 90 && x <= 270) || (x >= -270 && x <= -90)) {
+            transform.rotation = Quaternion.Euler(0, y, z);
+            
+        }
+    }
+
+
     private void OnMouseDown()
     {
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();    
@@ -23,13 +35,16 @@ public class Tile : MonoBehaviour
 
 
         queueA.GetComponent<Queue>().addItem(this);
+        SoundManager.instance.playButtonClick();
 
     }
 
     private void OnMouseEnter()
     {
-        
+       
         transform.rotation  = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, 0));
+
+        
     }
 
     private void OnMouseExit()
@@ -44,9 +59,7 @@ public class Tile : MonoBehaviour
   
     void OnDestroy()
     {
-        
-    
-        Game_Manager.instance.checkWinGame();
+        /*Game_Manager.instance.checkWinGame();*/
     }
 
 }

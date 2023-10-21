@@ -12,6 +12,8 @@ public class Manager : MonoBehaviour
     [SerializeField] TMP_Text heartText;
     [SerializeField] TMP_Text starText;
     [SerializeField] TMP_Text coinText;
+    [SerializeField] TextAsset playerJSON;
+
     void Start()
     {
      
@@ -22,10 +24,13 @@ public class Manager : MonoBehaviour
     private void updateData()
     {
         loadFilePlayerJSON();
-        levelText.text = string.Format("{0}", playerData.level);
-        heartText.text = string.Format("{0}", playerData.heart);
-        starText.text = string.Format("{0}", playerData.score);
-        coinText.text = string.Format("{0}", playerData.coin);
+       if(playerData != null)
+        {
+            levelText.text = string.Format("{0}", playerData.level);
+            heartText.text = string.Format("{0}", playerData.heart);
+            starText.text = string.Format("{0}", playerData.score);
+            coinText.text = string.Format("{0}", playerData.coin);
+        }
     }
     public void StartGame()
     {
@@ -35,8 +40,32 @@ public class Manager : MonoBehaviour
 
     public void loadFilePlayerJSON()
     {
-        string json = File.ReadAllText(Application.dataPath + "/data/player.json");
+        string path = Application.persistentDataPath + "/player.json";
+        if (System.IO.File.Exists(path))
+        {
+            LoadFilePlayerData(path);
+        }
+        else
+        {
+            CreateFilePlayerData(path);
+            LoadFilePlayerData(path);
 
+        }
+
+
+    }
+
+
+    private void CreateFilePlayerData(string path)
+    {
+        PlayerData data = new PlayerData();
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(path, json);
+    }
+
+    private void LoadFilePlayerData(string path)
+    {
+        string json = File.ReadAllText(path);
         playerData = JsonUtility.FromJson<PlayerData>(json);
     }
 

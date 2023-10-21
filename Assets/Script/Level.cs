@@ -8,6 +8,7 @@ public class Level : ScriptableObject
     public string MapName;
     public string DisplayName;
     public int PlayTime;
+    public int number;
 
     public List<GameObject> ListTile = new List<GameObject>();
 }

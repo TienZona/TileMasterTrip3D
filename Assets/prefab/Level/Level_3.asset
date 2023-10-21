@@ -12,11 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d493fca7fb17b149945dd923c552836, type: 3}
   m_Name: Level_3
   m_EditorClassIdentifier: 
-  level: 1
+  level: 3
   MapName: 1
   DisplayName: 1
-  PlayTime: 0
+  PlayTime: 5
+  number: 30
   ListTile:
-  - {fileID: 5789202541856136970, guid: 518c7e70405481f4599a04f97925ecb6, type: 3}
-  - {fileID: 5789202541856136970, guid: 6a75e32ea35478846ba0756cc335390e, type: 3}
-  - {fileID: 5789202541856136970, guid: 2d6200e0aeca2c14d819e229d53b6556, type: 3}
+  - {fileID: 5789202541856136970, guid: c93a9017ab622324b925b6deef6cabad, type: 3}
+  - {fileID: 5789202541856136970, guid: 3c7ef8afdf8b8ce4fb3b6b3679e94f6a, type: 3}
+  - {fileID: 5789202541856136970, guid: 1e90ad30511a1f443ad47d383cae6c3d, type: 3}
+  - {fileID: 5789202541856136970, guid: c2083d9a9765183478fb7b71ddf5e815, type: 3}
+  - {fileID: 5789202541856136970, guid: 96e5393fe23d08c4a8543e91402cf7ab, type: 3}
+  - {fileID: 5789202541856136970, guid: 1e40c52be6f1c6f4390081c978431239, type: 3}
+  - {fileID: 5789202541856136970, guid: 4fcb2fa354e65a244a1b43418948cfd4, type: 3}
+  - {fileID: 5789202541856136970, guid: 28166f3edc7d05544ae496dbbb7daed0, type: 3}
+  - {fileID: 5789202541856136970, guid: 9a6bfd59c5a194644a2365c5e73709d8, type: 3}

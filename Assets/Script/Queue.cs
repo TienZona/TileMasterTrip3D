@@ -19,15 +19,15 @@ public class Queue : MonoBehaviour
 
     void Start()
     {
-        float start = -4f;
+        float start = -3.1f;
         foreach (GameObject slot in ListSlot)
         {
             float lenght = ListSlot.Count;
-            float step = 1.15f;
+            float step = 1f;
             Vector3 position = gameObject.transform.position;
             slot.transform.position = new Vector3 (position.x + start, position.y + 0.001f, position.z);
             start += step;
-            slot.transform.localScale = new Vector3(0.1f, 0.001f, 0.8f);
+            slot.transform.localScale = new Vector3(0.13f, 0.001f, 0.8f);
         }
 
         foreach(var item in ListSlot.Select((slot, i) => (slot, i)))
@@ -36,6 +36,8 @@ public class Queue : MonoBehaviour
             Slot slot = new Slot(item.slot, item.i);
             slots.Add(slot);
         }
+
+     
     
     }
     void Update()
@@ -115,7 +117,7 @@ public class Queue : MonoBehaviour
         {
             moveItemBack(i);
         }
-
+        SoundManager.instance.PlayComboSound();
         Game_Manager.instance.checkWinGame();
     }
 
@@ -123,7 +125,6 @@ public class Queue : MonoBehaviour
     {
         Destroy(slots[index].tile.gameObject);
         slots[index].tile = null;
-        Game_Manager.instance.checkWinGame();
     }
 
     private void moveItemBack(int index)
